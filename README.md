@@ -3,11 +3,11 @@
 
 
 # Features
-## ✅ Store backup files over Google Drive / AWS
-## ✅ Database Backup
-## ✅ Full Project Backup Or Specific Folders
-## ✅ Exclude Specific Folders / Files
-## ✅ Detailed Configuration Easy to use
+### ✅ Store backup files over Google Drive / AWS
+### ✅ Database Backup
+### ✅ Full Project Backup Or Specific Folders
+### ✅ Exclude Specific Folders / Files
+### ✅ Detailed Configuration Easy to use
 
 <hr/>
 

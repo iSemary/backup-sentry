@@ -2,26 +2,51 @@
 
 namespace iSemary\BackupSentry\Storage;
 
+use iSemary\BackupSentry\Compress;
 use iSemary\BackupSentry\Config;
+use iSemary\BackupSentry\Env\EnvHandler;
 
 class StorageHandler {
+    protected $env;
     protected $config;
+    protected $compress;
     protected $backupFilesPath;
     public function __construct() {
         $this->config = (new Config);
+        $this->env = (new EnvHandler);
+        $this->compress = (new Compress);
+
         $this->backupFilesPath = $this->config->backupPath . 'files/';
     }
 
-    // Backup the complete project 
-    public function fullProject() {
-        $projectPath = $this->config->projectPath;
-        $backupFilesPath = $this->backupFilesPath . 'full-project/full-' . date('Y-m-d-H-i-s');
-        // IMPORTANT -> to avoid infinity loop you MUST add backup-sentry 
-        $exclude = ['vendor', 'backup-sentry', '.env'];
-        // Create backup files directory if not exists
-        $this->copyFolderFromTo($projectPath, $backupFilesPath, '', $exclude);
+    public function run() {
+        $backedUpFiles = [];
+
+        foreach ($this->config->filesBackup as $fileBackup) {
+            switch ($fileBackup) {
+                case 'storage':
+                    $fromDestinationPath = $this->config->storagePath;
+                    break;
+                case 'full-project':
+                    $fromDestinationPath = $this->config->projectPath;
+                    break;
+                default:
+                    $fromDestinationPath = $this->config->projectPath . '/' . $fileBackup;
+                    break;
+            }
+
+            $file[] =  $this->folderBackup((!in_array($fileBackup, ['storage', 'full-project']) ? 'custom' : $fileBackup), $fromDestinationPath);
+        }
     }
 
+
+    public function folderBackup($fileBackup, $fromDestinationPath) {
+        $backupFilesPath = $this->backupFilesPath . ($fileBackup . '/' . $fileBackup . '-' . date('Y-m-d-H-i-s'));
+        $this->copyFolderFromTo($fromDestinationPath, $backupFilesPath, '', $this->config->excludes);
+        $this->compress->zip($backupFilesPath, $backupFilesPath, $this->env->get("BACKUP_SENTRY_ZIP_PASSWORD"));
+    }
+
+    // Copy files from directory to another one, with array of excludes
     public function copyFolderFromTo($from, $to, $childFolder = '', $exclude = []) {
 
         $fromDirectory = opendir($from);

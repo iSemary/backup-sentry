@@ -8,6 +8,8 @@ return [
         'full_project' => true,
         // to backup the storage folder only
         'storage_only' => false,
+        // location of project storage
+        'storage_path' => "storage/",
         // to backup specific folders
         'specific_folders' => [
             'app/folder1',
@@ -24,6 +26,8 @@ return [
         ],
         // encryption type for the compressed file
         'encryption' => 'default', // EM_AES_256
+        // cleanup
+        'cleanup' => null // null OR n of days 
     ],
     'options' => [
         // put the emails to be alerted with the successful backup notification
