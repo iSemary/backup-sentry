@@ -1,18 +1,21 @@
 <?php
 
-namespace iSemary\BackupSentry\Services;
+namespace iSemary\BackupSentry\Cloud;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
-use iSemary\BackupSentry\Env\EnvHandler;
+use iSemary\BackupSentry\Config;
 
 
 class GoogleDrive {
+    private string $config;
     private string $uploadEndPoint;
-    private string $gClientID;
-    private string $gClientSecret;
-    private string $gRefreshToken;
+    private string $googleDriveFolderID;
+    private string $googleDriveClientID;
+    private string $googleDriveClientSecret;
+    private string $googleDriveRefreshToken;
+    private string $googleDriveConfigPath;
     private string $authUrl;
     private string $accessToken;
     private array $fileMetaData;
@@ -22,20 +25,21 @@ class GoogleDrive {
 
 
     public function __construct() {
-        $env = new EnvHandler;
+        $this->config = new Config;
         $this->uploadEndPoint = "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
         $this->authUrl = "https://oauth2.googleapis.com/token";
-        $this->gClientID = $env->get("GOOGLE_DRIVE_CLIENT_ID");
-        $this->gClientSecret = $env->get("GOOGLE_DRIVE_CLIENT_SECRET");
-        $this->gRefreshToken = $env->get("GOOGLE_DRIVE_REFRESH_TOKEN");
+        $this->googleDriveClientID = $this->config->googleDriveClientID;
+        $this->googleDriveClientSecret = $this->config->googleDriveClientSecret;
+        $this->googleDriveRefreshToken = $this->config->googleDriveRefreshToken;
+        $this->googleDriveConfigPath = $this->config->projectPath . '/config/config.json';
     }
 
 
     public function getGoogleDriveAccessToken() {
         $data = array(
-            "client_id" => $this->gClientID,
-            "client_secret" => $this->gClientSecret,
-            "refresh_token" => $this->gRefreshToken,
+            "client_id" => $this->googleDriveClientID,
+            "client_secret" => $this->googleDriveClientSecret,
+            "refresh_token" => $this->googleDriveRefreshToken,
             "grant_type" => "refresh_token"
         );
 
@@ -63,11 +67,11 @@ class GoogleDrive {
         }
     }
 
-    public function upload($filePath, $fileName, $folderID) {
+    public function upload($filePath) {
 
         $this->fileMetaData = [
-            'name' => $fileName,
-            'parents' => [$folderID],
+            'name' => basename($filePath),
+            'parents' => [$this->googleDriveFolderID],
         ];
 
         $this->getGoogleDriveAccessToken();
@@ -78,13 +82,12 @@ class GoogleDrive {
             'Authorization' => 'Bearer ' . $this->accessToken
         ];
 
-        $content = file_put_contents(storage_path('app/backup/db/config/config.json'), json_encode($this->fileMetaData));
-
+        $content = file_put_contents($this->googleDriveConfigPath, json_encode($this->fileMetaData));
         $options = [
             'multipart' => [
                 [
                     'name' => '',
-                    'contents' =>  Utils::tryFopen(storage_path('app/backup/db/config/config.json'), 'r'),
+                    'contents' =>  Utils::tryFopen($this->googleDriveConfigPath, 'r'),
                 ],
                 [
                     'name' => '',

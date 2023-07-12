@@ -1,6 +1,8 @@
 
 # 🛡️ BackupSentry [Backup today, relax tomorrow]
 
+BackupSentry is a PHP backup package designed to provide a secure and seamless solution for protecting and backup your critical data. With its advanced features and intuitive interface, Effortlessly create scheduled backups of databases, files, and directories.
+
 
 # Features
 ### ✅ Store backup files over Google Drive / AWS

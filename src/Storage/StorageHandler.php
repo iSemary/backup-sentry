@@ -4,16 +4,13 @@ namespace iSemary\BackupSentry\Storage;
 
 use iSemary\BackupSentry\Compress;
 use iSemary\BackupSentry\Config;
-use iSemary\BackupSentry\Env\EnvHandler;
 
 class StorageHandler {
-    protected $env;
     protected $config;
     protected $compress;
     protected $backupFilesPath;
     public function __construct() {
         $this->config = (new Config);
-        $this->env = (new EnvHandler);
         $this->compress = (new Compress);
 
         $this->backupFilesPath = $this->config->backupPath . 'files/';
@@ -43,7 +40,7 @@ class StorageHandler {
     public function folderBackup($fileBackup, $fromDestinationPath) {
         $backupFilesPath = $this->backupFilesPath . ($fileBackup . '/' . $fileBackup . '-' . date('Y-m-d-H-i-s'));
         $this->copyFolderFromTo($fromDestinationPath, $backupFilesPath, '', $this->config->excludes);
-        $this->compress->zip($backupFilesPath, $backupFilesPath, $this->env->get("BACKUP_SENTRY_ZIP_PASSWORD"));
+        $this->compress->zip($backupFilesPath, $backupFilesPath, $this->config->env->get("BACKUP_SENTRY_ZIP_PASSWORD"));
     }
 
     // Copy files from directory to another one, with array of excludes
@@ -104,5 +101,9 @@ class StorageHandler {
         }
 
         closedir($fromDirectory);
+    }
+
+    public function cleanUp() {
+        
     }
 }

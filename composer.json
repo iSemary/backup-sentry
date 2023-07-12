@@ -9,6 +9,7 @@
     "google-drive-backup"
   ],
   "license": "MIT",
+  "minimum-stability": "stable",
   "homepage": "https://www.abdelrahman.online",
   "autoload": {
     "psr-0": {

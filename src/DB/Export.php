@@ -6,26 +6,33 @@ use iSemary\BackupSentry\Config;
 use iSemary\BackupSentry\Env\EnvHandler;
 
 class Export {
+    private $config;
+
+    public function __construct() {
+        $this->config = new Config;
+    }
 
     public function run() {
-        $config = new Config;
-        $env = new EnvHandler;
 
         try {
-            $dir = $config->projectPath . $config->backupPath . 'db/';
+            $dir = $this->config->projectPath . $this->config->backupPath . 'db/';
             // create backup directory if not exists
             if (!is_dir($dir)) mkdir($dir, 0777, true);
 
-            // set the filename for the SQL file
+            // set the filename for the db file
             $filename = $dir . 'backup-' . date('Y-m-d-His') . '.sql';
 
-            switch ($env->get('DB_CONNECTION')) {
+            switch ($this->config->db['connection']) {
                 case 'mysql':
                     // MySQL database configuration
-                    // execute the mysqldump command and save the output to a file
-                    $cmd = "/usr/bin/mysqldump";
-                    $command = "$cmd --opt --host={$env->get('DB_HOST')} --user={$env->get('DB_USERNAME')} --password='{$env->get('DB_PASSWORD')}' {$env->get('DB_DATABASE')} > {$filename}";
+                    $command = "/usr/bin/mysqldump --opt --host={$this->config->db['host']} --user={$this->config->db['username']} --password='{$this->config->db['password']}' {$this->config->db['name']} > {$filename}";
                     break;
+                case 'mongodb';
+                    // MongoDB database configuration
+                    $command = "/usr/bin/mongodump --host {$this->config->db['host']} --port {$this->config->db['port']} --username {$this->config->db['username']} --password '{$this->config->db['password']}' --db {$this->config->db['name']} --out $filename";
+                case 'pgsql';
+                    // PostgreSQL database configuration
+                    $command = "/usr/bin/pg_dump --host=$this->config->db['host']} --port={$this->config->db['port']} --username={$this->config->db['username']} --password='{$this->config->db['password']}' --dbname={$this->config->db['name']} --file=$filename";
                 default:
                     break;
             }
