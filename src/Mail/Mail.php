@@ -2,7 +2,6 @@
 
 namespace iSemary\BackupSentry\Mail;
 
-use iSemary\BackupSentry\Config;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class Mail {
@@ -10,8 +9,8 @@ class Mail {
     private $config;
     private $mailer;
 
-    public function __construct() {
-        $this->config = new Config;
+    public function __construct($config) {
+        $this->config = $config;
         $this->mailer = new PHPMailer;
 
         if ($this->config->env->get("MAIL_DRIVER") == "smtp") $this->mailer->isSMTP();

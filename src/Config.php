@@ -54,21 +54,18 @@ class Config {
             $this->configFile = null;
         }
 
-        // $this->db = [
-        //     'connection' => $config['data'],
-        //     'host' => $config['data'],
-        //     'port' => $config['data'],
-        //     'name' => $config['data'],
-        //     'username' => $config['data'],
-        //     'password' => $config['data'],
-        // ];
+        $this->db = [
+            'allow' => $configFile['backup']['database']['allow'],
+            'connection' => $configFile['backup']['database']['connection'],
+            'host' => $configFile['backup']['database']['host'],
+            'port' => $configFile['backup']['database']['port'],
+            'name' => $configFile['backup']['database']['name'],
+            'username' => $configFile['backup']['database']['username'],
+            'password' => $configFile['backup']['database']['password'],
+        ];
 
-            
+
 
         $this->googleDriveFolderID = $this->env->get('GOOGLE_BACKUP_FOLDER_ID');
-    }
-
-    public function index() {
-        var_dump($this->configFile);
     }
 }

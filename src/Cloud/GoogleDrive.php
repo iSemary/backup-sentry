@@ -5,7 +5,6 @@ namespace iSemary\BackupSentry\Cloud;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Utils;
-use iSemary\BackupSentry\Config;
 
 
 class GoogleDrive {
@@ -24,8 +23,8 @@ class GoogleDrive {
     private $file;
 
 
-    public function __construct() {
-        $this->config = new Config;
+    public function __construct($config) {
+        $this->config = $config;
         $this->uploadEndPoint = "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
         $this->authUrl = "https://oauth2.googleapis.com/token";
         $this->googleDriveClientID = $this->config->googleDriveClientID;

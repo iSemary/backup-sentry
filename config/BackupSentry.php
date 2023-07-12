@@ -3,7 +3,15 @@
 return [
     'backup' => [
         // to backup the database tables
-        'database' => true,
+        'database' => [
+            'allow' => true,
+            'connection' => $_ENV['DB_CONNECTION'],
+            'host' => $_ENV['DB_HOST'],
+            'port' => $_ENV['DB_PORT'],
+            'name' => $_ENV['DB_DATABASE'],
+            'username' => $_ENV['DB_USERNAME'],
+            'password' => $_ENV['DB_PASSWORD'],
+        ],
         // to backup the complete project files
         'full_project' => true,
         // to backup the storage folder only

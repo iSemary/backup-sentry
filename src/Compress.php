@@ -8,9 +8,13 @@ class Compress {
         // Create a new zip archive
         $zip = new \ZipArchive;
 
+
+        if (is_dir(dirname($fileZipLocation)) === false) {
+            mkdir(dirname($fileZipLocation), 0777, true);
+        }
+        // fopen(($fileZipLocation), "w");
         // Open the zip archive
         if ($zip->open($fileZipLocation, \ZipArchive::CREATE) === TRUE) {
-
             try {
                 // Add the file to the archive
                 $zip->addFile($filePath, basename($filePath));
@@ -26,9 +30,9 @@ class Compress {
                 $zip->close();
 
 
-                if (file_exists($filePath)) {
-                    unlink($filePath);
-                }
+                // if (file_exists($filePath)) {
+                //     unlink($filePath);
+                // }
 
                 return [
                     'success' => true,
@@ -45,8 +49,10 @@ class Compress {
         } else {
             return [
                 'success' => false,
-                'message' => "Could'\nt open the directory, Probably permission denied.",
+                'message' => "Couldn't open the directory, Probably permission denied.",
                 'file_name' => null,
+                'target_location'=>$fileZipLocation,
+                'target_file'=>$filePath,
             ];
         }
     }

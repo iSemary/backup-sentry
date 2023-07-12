@@ -3,14 +3,13 @@
 namespace iSemary\BackupSentry\Storage;
 
 use iSemary\BackupSentry\Compress;
-use iSemary\BackupSentry\Config;
 
 class StorageHandler {
     protected $config;
     protected $compress;
     protected $backupFilesPath;
-    public function __construct() {
-        $this->config = (new Config);
+    public function __construct($config) {
+        $this->config = $config;
         $this->compress = (new Compress);
 
         $this->backupFilesPath = $this->config->backupPath . 'files/';
@@ -32,15 +31,23 @@ class StorageHandler {
                     break;
             }
 
-            $file[] =  $this->folderBackup((!in_array($fileBackup, ['storage', 'full-project']) ? 'custom' : $fileBackup), $fromDestinationPath);
+            $backedUpFiles[] = $this->folderBackup((!in_array($fileBackup, ['storage', 'full-project']) ? 'custom' : $fileBackup), $fromDestinationPath);
         }
+
+        return [
+            'success' => true,
+            'status' => 200,
+            'message' => count($this->config->filesBackup) . ' Folders has been created',
+            'file_names' => $backedUpFiles
+        ];
     }
 
 
     public function folderBackup($fileBackup, $fromDestinationPath) {
         $backupFilesPath = $this->backupFilesPath . ($fileBackup . '/' . $fileBackup . '-' . date('Y-m-d-H-i-s'));
+        $compressBackupFilesDirectory = $this->backupFilesPath . 'compressed/' . $fileBackup . '/' . date('Y-m-d-H-i-s') . '.zip';
         $this->copyFolderFromTo($fromDestinationPath, $backupFilesPath, '', $this->config->excludes);
-        $this->compress->zip($backupFilesPath, $backupFilesPath, $this->config->env->get("BACKUP_SENTRY_ZIP_PASSWORD"));
+        return $this->compress->zip($compressBackupFilesDirectory, $backupFilesPath, $this->config->env->get("BACKUP_SENTRY_ZIP_PASSWORD"));
     }
 
     // Copy files from directory to another one, with array of excludes
@@ -49,12 +56,12 @@ class StorageHandler {
         $fromDirectory = opendir($from);
 
         if (is_dir($to) === false) {
-            mkdir($to);
+            mkdir($to, 0777, true);
         }
 
         if ($childFolder !== '') {
             if (is_dir("$to/$childFolder") === false) {
-                mkdir("$to/$childFolder");
+                mkdir("$to/$childFolder", 0777, true);
             }
 
             while (($file = readdir($fromDirectory)) !== false) {
@@ -104,6 +111,5 @@ class StorageHandler {
     }
 
     public function cleanUp() {
-        
     }
 }

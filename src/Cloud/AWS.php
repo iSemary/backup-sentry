@@ -2,7 +2,6 @@
 
 namespace iSemary\BackupSentry\Cloud;
 
-use iSemary\BackupSentry\Config;
 
 class AWS {
     private string $config;
@@ -10,8 +9,8 @@ class AWS {
     private $secretKey;
     private $bucketName;
 
-    public function __construct() {
-        $this->config = new Config;
+    public function __construct($config) {
+        $this->config = $config;
 
         $this->accessKey = $this->config->accessKey;
         $this->secretKey = $this->config->secretKey;
