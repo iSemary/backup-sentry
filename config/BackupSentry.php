@@ -12,6 +12,28 @@ return [
             'username' => $_ENV['DB_USERNAME'],
             'password' => $_ENV['DB_PASSWORD'],
         ],
+        // upload backup file into cloud services [] 
+        'cloud_services' => [
+            'google_drive' => [
+                'allow' => true,
+                'folder_id' => '', // 
+                'client_id' => '', // 
+                'client_secret' => '', // 
+                'refresh_token' => '', // 
+            ],
+            'aws' => [
+                'allow' => true,
+                'access_key' => '', // 
+                'secret_key' => '', // 
+                'bucket_name' => '', // 
+            ]
+        ],
+        // Main email that will get emails about backup whatever it is success or failure 
+        // [you could add cc on each type of emails in the options below]
+        'mail' => [
+            'allow' => true,
+            'to' => 'to@example.com'
+        ],
         // to backup the complete project files
         'full_project' => true,
         // to backup the storage folder only
@@ -38,7 +60,7 @@ return [
         // that's mean the original back up folders will be kept in "/storage/backup-sentry/files/" [Which will be kept uncompressed]
         'keep_original_backup_folders' => true,
         // cleanup
-        'cleanup' => null // null OR n of days 
+        'cleanup' => null // null OR (int) n of days 
     ],
     'options' => [
         // put the emails to be alerted with the successful backup notification

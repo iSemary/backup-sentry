@@ -12,18 +12,10 @@ class Config {
     public $excludes;
     public $filesBackup;
     public $storagePath;
-    // AWS
-    public $accessKey;
-    public $secretKey;
-    public $bucketName;
-    // Google Drive
-    public $googleDriveClientID;
-    public $googleDriveClientSecret;
-    public $googleDriveRefreshToken;
-    public $googleDriveFolderID;
 
     public $zipPassword;
     public $db;
+    public object $cloud;
     public $logFile;
 
     public function __construct() {
@@ -57,7 +49,7 @@ class Config {
         $this->logFile = $this->backupPath . 'log/log-' . date('Y-m-d') . '.log';
 
 
-        
+
         // Folders/Files configuration
         $filesBackup = [];
 
@@ -67,7 +59,7 @@ class Config {
 
         $this->filesBackup = $filesBackup;
 
-        
+
         // Database configuration
         $this->db = [
             'allow' => $configFile['backup']['database']['allow'],
@@ -79,8 +71,23 @@ class Config {
             'password' => $configFile['backup']['database']['password'],
         ];
 
+        $this->cloud = [
+            'google_drive' => [
+                'allow' => true,
+                'folder_id' => '',
+                'client_id' => '',
+                'client_secret' => '',
+                'refresh_token' => '',
+            ],
+            'aws' => [
+                'allow' => true,
+                'access_key' => '',
+                'secret_key' => '',
+                'bucket_name' => '',
+            ]
+        ];
+    }
 
-
-        $this->googleDriveFolderID = $this->env->get('GOOGLE_BACKUP_FOLDER_ID');
+    private function returnEnvValueIfNotExistsInConfig($value, $envKey) {
     }
 }
