@@ -31,15 +31,15 @@ class BackupSentry {
 
         if ($exportDB['status'] == 200) $exportedFiles[] = $exportDB['file_name'];
 
-
         $exportFiles = $this->exportFiles();
         $log[] = $exportFiles;
+                
+        if ($exportFiles['status'] == 200) $exportedFiles = array_merge($exportedFiles, $exportFiles['file_names']);
         
-        die(var_dump($exportFiles));
+        // $this->writeLogFile($log);
 
-        if ($exportFiles['status'] == 200) array_merge($exportedFiles, $exportFiles['file_names']);
-
-
+        die(print_r($log));
+        
 
         $compressExportFile = $this->compressExportFile();
 
@@ -78,8 +78,8 @@ class BackupSentry {
         return (new Mail($this->config))->send($status, $to, $subject, $message);
     }
 
-    private function writeLogFile() {
-        return (new Log)->run();
+    private function writeLogFile($message) {
+        return (new Log)->write($message, $this->config->logFile);
     }
 
     private function cleanUp() {

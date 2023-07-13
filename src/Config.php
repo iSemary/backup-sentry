@@ -24,6 +24,7 @@ class Config {
 
     public $zipPassword;
     public $db;
+    public $logFile;
 
     public function __construct() {
         $this->env = new EnvHandler;
@@ -31,15 +32,6 @@ class Config {
         $reflection = new \ReflectionClass(\Composer\Autoload\ClassLoader::class);
         // Set the root project directory
         $this->projectPath = dirname($reflection->getFileName(), 3);
-
-        $this->backupPath = $this->projectPath . '/' . 'storage/backup-sentry/';
-
-        $this->storagePath = $this->projectPath . '/' . 'storage/';
-
-        // IMPORTANT -> to avoid infinity loop you MUST add backup-sentry and .git
-        $this->excludes = ['backup-sentry', 'vendor', '.git'];
-
-        $this->filesBackup = ['storage', 'full-project', 'tests'];
 
         $this->zipPassword = $this->env->get('BACKUP_SENTRY_ZIP_PASSWORD');
 
@@ -54,6 +46,29 @@ class Config {
             $this->configFile = null;
         }
 
+        $this->storagePath = $this->projectPath . '/' . $this->configFile['backup']['storage_path'];
+
+        $this->backupPath = $this->storagePath . 'backup-sentry/';
+
+        // IMPORTANT -> to avoid infinity loop you MUST add backup-sentry and .git
+        $this->excludes = ['backup-sentry', 'vendor', '.git'];
+
+
+        $this->logFile = $this->backupPath . 'log/log-' . date('Y-m-d') . '.log';
+
+
+        
+        // Folders/Files configuration
+        $filesBackup = [];
+
+        $this->configFile['backup']['full_project'] ? $filesBackup[] = "full-project" : null;
+        $this->configFile['backup']['storage_only'] ? $filesBackup[] = "storage" : null;
+        count($this->configFile['backup']['specific_folders_or_files']) ? $filesBackup = array_merge($filesBackup, $this->configFile['backup']['specific_folders_or_files']) : null;
+
+        $this->filesBackup = $filesBackup;
+
+        
+        // Database configuration
         $this->db = [
             'allow' => $configFile['backup']['database']['allow'],
             'connection' => $configFile['backup']['database']['connection'],

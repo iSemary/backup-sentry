@@ -15,13 +15,15 @@ return [
         // to backup the complete project files
         'full_project' => true,
         // to backup the storage folder only
-        'storage_only' => false,
+        'storage_only' => true,
         // location of project storage
         'storage_path' => "storage/",
-        // to backup specific folders
-        'specific_folders' => [
-            'app/folder1',
-            'app/folder2',
+        // to backup specific folders or files
+        'specific_folders_or_files' => [
+            'tests',
+            '.env'
+            // 'app/folder1',
+            // 'app/file.txt',
         ],
         // to store backup files to Google Drive  
         'google_drive' => false,
@@ -29,11 +31,12 @@ return [
         'email_alert' => true,
         // to exclude specific folders
         'exclude_folders' => [
+            '.git',
             'vendor',
             'node_modules',
         ],
-        // encryption type for the compressed file
-        'encryption' => 'default', // EM_AES_256
+        // that's mean the original back up folders will be kept in "/storage/backup-sentry/files/" [Which will be kept uncompressed]
+        'keep_original_backup_folders' => true,
         // cleanup
         'cleanup' => null // null OR n of days 
     ],
@@ -42,5 +45,7 @@ return [
         'alert_successful_backup_email_to' => ['first_email@example.com', 'second_email@example.com'],
         // put the emails to be alerted with the failure backup notification
         'alert_failure_backup_email_to' => ['developer@example.com', 'devops@example.com'],
+        // encryption type for the compressed file
+        'encryption' => 'EM_AES_256',
     ]
 ];

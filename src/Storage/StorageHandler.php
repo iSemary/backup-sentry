@@ -31,7 +31,7 @@ class StorageHandler {
                     break;
             }
 
-            $backedUpFiles[] = $this->folderBackup((!in_array($fileBackup, ['storage', 'full-project']) ? 'custom' : $fileBackup), $fromDestinationPath);
+            $backedUpFiles[] = $this->folderBackup((!in_array($fileBackup, ['storage', 'full-project']) ? 'custom' : $fileBackup), $fromDestinationPath)['file_name'];
         }
 
         return [
@@ -43,21 +43,29 @@ class StorageHandler {
     }
 
 
-    public function folderBackup($fileBackup, $fromDestinationPath) {
-        $backupFilesPath = $this->backupFilesPath . ($fileBackup . '/' . $fileBackup . '-' . date('Y-m-d-H-i-s'));
-        $compressBackupFilesDirectory = $this->backupFilesPath . 'compressed/' . $fileBackup . '/' . date('Y-m-d-H-i-s') . '.zip';
-        $this->copyFolderFromTo($fromDestinationPath, $backupFilesPath, '', $this->config->excludes);
-        return $this->compress->zip($compressBackupFilesDirectory, $backupFilesPath, $this->config->env->get("BACKUP_SENTRY_ZIP_PASSWORD"));
+    public function folderBackup($fileBackupType, $fromDestinationPath) {
+        $backupFilesPath = $this->backupFilesPath . ($fileBackupType . '/' . $fileBackupType . '-' . date('Y-m-d-H-i-s'));
+        $compressBackupFilesDirectory = $this->config->projectPath . '/storage/backup-sentry/compressed/' . $fileBackupType . '/' . $fileBackupType . '-' . date('Y-m-d-H-i-s') . '.zip';
+        if (is_dir($fromDestinationPath)) {
+            // copy directory with sub folders
+            $this->copyFolderFromTo($fromDestinationPath, $backupFilesPath, '', $this->config->excludes);
+        } else {
+            // copy single file
+            copy($fromDestinationPath, $backupFilesPath . '/' . basename($fromDestinationPath));
+        }
+
+        return $this->compress->zip($compressBackupFilesDirectory, $backupFilesPath, $this->config->env->get("BACKUP_SENTRY_ZIP_PASSWORD"), $this->config->configFile['backup']['keep_original_backup_folders'], $this->config->configFile['options']['encryption']);
     }
 
     // Copy files from directory to another one, with array of excludes
     public function copyFolderFromTo($from, $to, $childFolder = '', $exclude = []) {
 
-        $fromDirectory = opendir($from);
 
         if (is_dir($to) === false) {
             mkdir($to, 0777, true);
         }
+
+        $fromDirectory = opendir($from);
 
         if ($childFolder !== '') {
             if (is_dir("$to/$childFolder") === false) {
