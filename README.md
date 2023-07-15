@@ -34,7 +34,6 @@ DB_PASSWORD=###
 GOOGLE_BACKUP_FOLDER_ID=###
 GOOGLE_DRIVE_CLIENT_ID=###
 GOOGLE_DRIVE_CLIENT_SECRET=###
-GOOGLE_DRIVE_REFRESH_TOKEN=###
 ```
 ### 🔑 Environment Keys Required For AWS Backup  
 ```

@@ -15,7 +15,7 @@ class Config {
 
     public $zipPassword;
     public $db;
-    public object $cloud;
+    public array $cloud;
     public $logFile;
 
     public function __construct() {
@@ -74,20 +74,20 @@ class Config {
         $this->cloud = [
             'google_drive' => [
                 'allow' => true,
-                'folder_id' => '',
-                'client_id' => '',
-                'client_secret' => '',
-                'refresh_token' => '',
+                'folder_id' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['google_drive']['folder_id'], 'GOOGLE_BACKUP_FOLDER_ID'),
+                'client_id' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['google_drive']['client_id'], 'GOOGLE_DRIVE_CLIENT_ID'),
+                'client_secret' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['google_drive']['client_secret'], 'GOOGLE_DRIVE_CLIENT_SECRET'),
             ],
             'aws' => [
                 'allow' => true,
-                'access_key' => '',
-                'secret_key' => '',
-                'bucket_name' => '',
+                'access_key' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['aws']['access_key'], 'AWS_ACCESS_KEY_ID'),
+                'secret_key' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['aws']['secret_key'], 'AWS_SECRET_ACCESS_KEY'),
+                'bucket_name' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['aws']['bucket_name'], 'AWS_BUCKET'),
             ]
         ];
     }
 
     private function returnEnvValueIfNotExistsInConfig($value, $envKey) {
+        return (isset($value) && !empty($value)) ? $value : $this->env->get($envKey);
     }
 }

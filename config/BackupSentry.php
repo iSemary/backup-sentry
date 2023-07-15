@@ -19,7 +19,6 @@ return [
                 'folder_id' => '', // 
                 'client_id' => '', // 
                 'client_secret' => '', // 
-                'refresh_token' => '', // 
             ],
             'aws' => [
                 'allow' => true,

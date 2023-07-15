@@ -45,13 +45,18 @@ class BackupSentry {
         }
 
 
+        $this->writeLogFile($log);
 
         $uploadToGoogleDrive = $this->uploadToGoogleDrive($this->backupFilePath . $this->backupFileName);
+        $log[] = $uploadToGoogleDrive;
+
 
         die(print_r(""));
         // $uploadToAWS = $this->uploadToAWS();
+        // $log[] = $uploadToAWS;
 
         // $sendLogMail = $this->sendLogMail();
+        // $log[] = $sendLogMail;
 
         $cleanUp = $this->cleanUp($exportedCompressedFiles); // clean up compressed files
 
@@ -66,7 +71,7 @@ class BackupSentry {
         return (new StorageHandler($this->config))->run();
     }
 
-    private function compressExportFile(array $exportedCompressedFile = []) {
+    private function compressExportFile($exportedCompressedFile) {
         return (new Compress($this->config))->zip($this->backupFilePath . $this->backupFileName, $exportedCompressedFile, $this->config->zipPassword);
     }
 

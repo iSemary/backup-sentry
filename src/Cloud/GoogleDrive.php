@@ -10,13 +10,8 @@ use GuzzleHttp\Psr7\Utils;
 class GoogleDrive {
     private string $config;
     private string $uploadEndPoint;
-    private string $googleDriveFolderID;
-    private string $googleDriveClientID;
-    private string $googleDriveClientSecret;
     private string $googleDriveRefreshToken;
-    private string $googleDriveConfigPath;
     private string $authUrl;
-    private string $accessToken;
     private array $fileMetaData;
     private array $params;
 

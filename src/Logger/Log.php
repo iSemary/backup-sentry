@@ -8,7 +8,7 @@ class Log {
         try {
 
             if (!is_dir(dirname($file))) {
-                mkdir($file, 0777, true);
+                mkdir(dirname($file), 0777, true);
             }
 
             if (!file_exists($file)) {
