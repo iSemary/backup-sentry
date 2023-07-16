@@ -16,6 +16,7 @@ class Config {
     public $zipPassword;
     public $db;
     public array $cloud;
+    public object $channels;
     public $logFile;
 
     public function __construct() {
@@ -50,6 +51,19 @@ class Config {
 
 
         $this->logFile = $this->backupPath . 'log/log-' . date('Y-m-d') . '.log';
+
+        /**
+         * Initialize Channels Object
+         */
+        $this->channels = new \stdClass();
+        // Slack
+        $this->channels->slack = new \stdClass();
+        $this->channels->slack->allow = $this->configFile['backup']['channels']['slack']['allow'];
+        $this->channels->slack->slackWebhookURL = self::returnEnvValueIfNotExistsInConfig($this->configFile['backup']['channels']['slack']['webhook_url'], 'SLACK_WEBHOOK_URL');
+        // Telegram
+        $this->channels->telegram = new \stdClass();
+        $this->channels->telegram->allow = $this->configFile['backup']['channels']['telegram']['allow'];
+        $this->channels->telegram->botToken = self::returnEnvValueIfNotExistsInConfig($this->configFile['backup']['channels']['telegram']['bot_token'], 'TELEGRAM_BOT_TOKEN');
 
 
 

@@ -37,6 +37,19 @@ return [
         ],
         // enable sending alert emails
         'email_alert' => true,
+        'channels' => [
+            // enable sending alert via slack channels
+            'slack' => [
+                'allow' => true,
+                'webhook_url' => '' // you can create a new app on slack OR leave empty if the default value is same as env key : SLACK_WEBHOOK_URL
+            ],
+            // enable sending alert via telegram bots
+            'telegram' => [
+                'allow' => true,
+                'bot_token' => '', // you can create a new bot on telegram OR leave empty if the default value is same as env key : TELEGRAM_BOT_TOKEN
+                'chat_ids' => [] // array of chat ids of your users ** [Telegram not sending messages by phone number]
+            ]
+        ],
         // to backup the complete project files
         'full_project' => true,
         // to backup the storage folder only
