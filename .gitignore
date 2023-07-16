@@ -5,3 +5,4 @@ phpunit.xml
 .env
 /storage
 index.php
+/config/TestBackupSentry.php

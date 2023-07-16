@@ -89,12 +89,13 @@ class BackupSentry {
         }
 
         // send email alert 
-        $sendLogMail = $this->sendLogMail((count($errors) == 0 ? true : false), count($errors) == 0 ? $errors : false);
-        if ($sendLogMail['status'] != 200) {
-            $errors[] = $sendLogMail['message'] . ' | ' . $sendLogMail['response'];
+        if ($this->config->configFile['backup']['mail']['allow']) {
+            $sendLogMail = $this->sendLogMail((count($errors) == 0 ? true : false), count($errors) == 0 ? $errors : false);
+            if ($sendLogMail['status'] != 200) {
+                $errors[] = $sendLogMail['message'] . ' | ' . $sendLogMail['response'];
+            }
+            $log[] = $sendLogMail;
         }
-        $log[] = $sendLogMail;
-
         // write out the logging data
         $this->writeLogFile($logs);
     }

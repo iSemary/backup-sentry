@@ -12,29 +12,31 @@ return [
             'username' => $_ENV['DB_USERNAME'],
             'password' => $_ENV['DB_PASSWORD'],
         ],
-        // upload backup file into cloud services [] 
+        // upload backup file into cloud services 
         'cloud_services' => [
             'google_drive' => [
                 'allow' => false,
-                'folder_id' => '', // 
-                'client_id' => '', // 
-                'refresh_token' => '', // 
-                'client_secret' => '', // 
+                'folder_id' => '', // leave empty if the default value is same as env key : GOOGLE_DRIVE_BACKUP_FOLDER_ID
+                'client_id' => '', // leave empty if the default value is same as env key : GOOGLE_DRIVE_CLIENT_ID
+                'refresh_token' => '', // leave empty if the default value is same as env key : GOOGLE_DRIVE_REFRESH_TOKEN
+                'client_secret' => '', // leave empty if the default value is same as env key : GOOGLE_DRIVE_CLIENT_SECRET
             ],
             'aws' => [
                 'allow' => true,
-                'access_key' => '', // 
-                'secret_key' => '', // 
-                'bucket_name' => '', // 
-                'region' => '', // 
+                'access_key' => '', // leave empty if the default value is same as env key : AWS_ACCESS_KEY_ID
+                'secret_key' => '', // leave empty if the default value is same as env key : AWS_SECRET_ACCESS_KEY
+                'bucket_name' => '', // leave empty if the default value is same as env key : AWS_BUCKET
+                'region' => '', // leave empty if the default value is same as env key : AWS_DEFAULT_REGION
             ]
         ],
         // Main email that will get emails about backup whatever it is success or failure 
         // [you could add cc on each type of emails in the options below]
         'mail' => [
             'allow' => true,
-            'to' => 'to@example.com'
+            'to' => ['to@mail.com', 'another_to@mail.com']
         ],
+        // enable sending alert emails
+        'email_alert' => true,
         // to backup the complete project files
         'full_project' => true,
         // to backup the storage folder only
@@ -48,10 +50,6 @@ return [
             // 'app/folder1',
             // 'app/file.txt',
         ],
-        // to store backup files to Google Drive  
-        'google_drive' => false,
-        // enable sending alert emails
-        'email_alert' => true,
         // to exclude specific files/folders
         'excludes' => [
             '.git',
