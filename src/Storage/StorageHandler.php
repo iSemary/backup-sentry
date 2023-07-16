@@ -2,6 +2,7 @@
 
 namespace iSemary\BackupSentry\Storage;
 
+use Exception;
 use iSemary\BackupSentry\Compress;
 
 class StorageHandler {
@@ -118,6 +119,23 @@ class StorageHandler {
         closedir($fromDirectory);
     }
 
-    public function cleanUp() {
+    public function cleanUp(array $files = []) {
+        try {
+            foreach ($files as $key => $file) {
+                if (file_exists($file)) unlink($file);
+            }
+            return [
+                'status' => 200,
+                'success' => true,
+                'message' => 'Clean up successfully finished.'
+            ];
+        } catch (Exception $e) {
+            return [
+                'status' => 400,
+                'success' => false,
+                'message' => 'Failure on cleaning up files.',
+                'response' => $e->getMessage()
+            ];
+        }
     }
 }

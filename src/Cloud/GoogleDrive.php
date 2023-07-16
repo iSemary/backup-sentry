@@ -8,24 +8,26 @@ use GuzzleHttp\Psr7\Utils;
 
 
 class GoogleDrive {
-    private string $config;
+    private $config;
     private string $uploadEndPoint;
-    private string $googleDriveRefreshToken;
     private string $authUrl;
     private array $fileMetaData;
-    private array $params;
-
-    private $file;
-
+    private string $accessToken;
+    private string $googleDriveRefreshToken;
+    private string $googleDriveClientID;
+    private string $googleDriveFolderID;
+    private string $googleDriveClientSecret;
+    private string $googleDriveConfigPath;
 
     public function __construct($config) {
         $this->config = $config;
         $this->uploadEndPoint = "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
         $this->authUrl = "https://oauth2.googleapis.com/token";
-        $this->googleDriveClientID = $this->config->googleDriveClientID;
-        $this->googleDriveClientSecret = $this->config->googleDriveClientSecret;
-        $this->googleDriveRefreshToken = $this->config->googleDriveRefreshToken;
-        $this->googleDriveConfigPath = $this->config->projectPath . '/config/config.json';
+        $this->googleDriveClientID = $this->config->cloud['google_drive']['client_id'];
+        $this->googleDriveFolderID = $this->config->cloud['google_drive']['folder_id'];
+        $this->googleDriveClientSecret = $this->config->cloud['google_drive']['client_secret'];
+        $this->googleDriveRefreshToken = $this->config->cloud['google_drive']['refresh_token'];
+        $this->googleDriveConfigPath = $this->config->projectPath . '/storage/backup-sentry/config.json';
     }
 
 
@@ -93,6 +95,24 @@ class GoogleDrive {
         $request = new Request('POST', $this->uploadEndPoint, $headers);
         $res = $client->send($request, $options);
 
-        return $res;
+        $responseBody = $res->getBody()->getContents();
+        $responseBody = json_decode($responseBody, true);
+
+        if (isset($responseBody['id'])) {
+            $response = [
+                'success' => true,
+                'status' => 200,
+                'message' => "File uploaded to google drive successfully."
+            ];
+        } else {
+            $response = [
+                'success' => false,
+                'status' => 400,
+                'message' => "Failure on uploading file to google drive.",
+                "response" => json_encode($res)
+            ];
+        }
+
+        return $response;
     }
 }

@@ -15,9 +15,10 @@ return [
         // upload backup file into cloud services [] 
         'cloud_services' => [
             'google_drive' => [
-                'allow' => true,
+                'allow' => false,
                 'folder_id' => '', // 
                 'client_id' => '', // 
+                'refresh_token' => '', // 
                 'client_secret' => '', // 
             ],
             'aws' => [
@@ -25,6 +26,7 @@ return [
                 'access_key' => '', // 
                 'secret_key' => '', // 
                 'bucket_name' => '', // 
+                'region' => '', // 
             ]
         ],
         // Main email that will get emails about backup whatever it is success or failure 
@@ -50,8 +52,8 @@ return [
         'google_drive' => false,
         // enable sending alert emails
         'email_alert' => true,
-        // to exclude specific folders
-        'exclude_folders' => [
+        // to exclude specific files/folders
+        'excludes' => [
             '.git',
             'vendor',
             'node_modules',
@@ -59,7 +61,7 @@ return [
         // that's mean the original back up folders will be kept in "/storage/backup-sentry/files/" [Which will be kept uncompressed]
         'keep_original_backup_folders' => true,
         // cleanup
-        'cleanup' => null // null OR (int) n of days 
+        'cleanup' => true
     ],
     'options' => [
         // put the emails to be alerted with the successful backup notification

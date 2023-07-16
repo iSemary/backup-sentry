@@ -25,11 +25,11 @@ class Mail {
         $this->mailer->setFrom($this->config->env->get("MAIL_FROM_ADDRESS"), $this->config->env->get("MAIL_FROM_NAME"));
     }
 
-    public function send($status, $to, $subject, $message) {
-        $this->mailer->addAddress($to);
+    public function send($status, $content) {
+        // $this->mailer->addAddress($to);
 
-        $this->mailer->Subject = $subject;
-        $this->mailer->Body = $message;
+        // $this->mailer->Subject = $subject;
+        // $this->mailer->Body = $message;
 
 
         try {
@@ -43,7 +43,8 @@ class Mail {
             return [
                 'status' => 400,
                 'success' => false,
-                'message' => "Failed to send mail : " . $e->getMessage(),
+                'message' => "Failed to send mail",
+                'response' =>  $e->getMessage()
             ];
         }
     }

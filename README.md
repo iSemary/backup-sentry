@@ -13,12 +13,14 @@ BackupSentry is a PHP backup package designed to provide a secure and seamless s
 
 <hr/>
 
-### 🔑 Environment Keys Required For File Compress 
+## 🔑 Environment Keys Required For :
+
+### File Compress 
 
 ```
 BACKUP_SENTRY_ZIP_PASSWORD=###
 ```
-### 🔑 Environment Keys Required For Database Backup 
+### Database Backup 
 
 ```
 DB_CONNECTION=###
@@ -29,21 +31,21 @@ DB_USERNAME=###
 DB_PASSWORD=###
 ```
 
-### 🔑 Environment Keys Required For Google Drive Backup  
+### Google Drive Backup  
 ```
-GOOGLE_BACKUP_FOLDER_ID=###
 GOOGLE_DRIVE_CLIENT_ID=###
 GOOGLE_DRIVE_CLIENT_SECRET=###
+GOOGLE_DRIVE_REFRESH_TOKEN=###
+GOOGLE_DRIVE_BACKUP_FOLDER_ID=###
 ```
-### 🔑 Environment Keys Required For AWS Backup  
+### AWS Backup  
 ```
 AWS_ACCESS_KEY_ID=###
 AWS_SECRET_ACCESS_KEY=###
 AWS_DEFAULT_REGION=###
 AWS_BUCKET=###
-AWS_USE_PATH_STYLE_ENDPOINT=###
 ```
-### 🔑 Environment Keys Required For Sending Email Alerts
+### Sending Email Alerts
 ```
 MAIL_DRIVER=###
 MAIL_HOST=###

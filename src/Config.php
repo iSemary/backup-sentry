@@ -43,7 +43,10 @@ class Config {
         $this->backupPath = $this->storagePath . 'backup-sentry/';
 
         // IMPORTANT -> to avoid infinity loop you MUST add backup-sentry and .git
-        $this->excludes = ['backup-sentry', 'vendor', '.git'];
+        $this->excludes = [
+            $this->configFile['backup']['excludes'],
+            'backup-sentry'
+        ];
 
 
         $this->logFile = $this->backupPath . 'log/log-' . date('Y-m-d') . '.log';
@@ -74,19 +77,31 @@ class Config {
         $this->cloud = [
             'google_drive' => [
                 'allow' => true,
-                'folder_id' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['google_drive']['folder_id'], 'GOOGLE_BACKUP_FOLDER_ID'),
+                'folder_id' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['google_drive']['folder_id'], 'GOOGLE_DRIVE_BACKUP_FOLDER_ID'),
                 'client_id' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['google_drive']['client_id'], 'GOOGLE_DRIVE_CLIENT_ID'),
                 'client_secret' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['google_drive']['client_secret'], 'GOOGLE_DRIVE_CLIENT_SECRET'),
+                'refresh_token' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['google_drive']['refresh_token'], 'GOOGLE_DRIVE_REFRESH_TOKEN'),
             ],
             'aws' => [
                 'allow' => true,
                 'access_key' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['aws']['access_key'], 'AWS_ACCESS_KEY_ID'),
                 'secret_key' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['aws']['secret_key'], 'AWS_SECRET_ACCESS_KEY'),
                 'bucket_name' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['aws']['bucket_name'], 'AWS_BUCKET'),
+                'region' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['aws']['region'], 'AWS_DEFAULT_REGION'),
             ]
         ];
     }
 
+    /**
+     * The function returns a value if it exists and is not empty, otherwise it retrieves the value from
+     * the environment using a specified key.
+     * 
+     * @param value The value parameter is the value that you want to check if it exists and is not empty.
+     * @param envKey The `envKey` parameter is a string that represents the key of the environment variable
+     * that you want to retrieve.
+     * 
+     * @return the value of `` if it is set and not empty. Otherwise, it returns the value of env
+     */
     private function returnEnvValueIfNotExistsInConfig($value, $envKey) {
         return (isset($value) && !empty($value)) ? $value : $this->env->get($envKey);
     }

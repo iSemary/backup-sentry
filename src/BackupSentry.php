@@ -23,44 +23,80 @@ class BackupSentry {
     }
 
     public function run() {
-        $log = [];
+        $logs = [];
+        $errors = [];
+
         $exportedCompressedFiles = [];
 
-        $exportDB = $this->exportDB();
-        $log[] = $exportDB;
+        // export database
+        if ($this->config->configFile['backup']['database']['allow']) {
+            $exportDB = $this->exportDB();
+            $logs[] = $exportDB;
 
-        if ($exportDB['status'] == 200) $exportedCompressedFiles[] = $exportDB['file_name'];
-
-        $exportFiles = $this->exportFiles();
-        $log[] = $exportFiles;
-
-        if ($exportFiles['status'] == 200) $exportedCompressedFiles = array_merge($exportedCompressedFiles, $exportFiles['file_names']);
-
-
-
-        foreach ($exportedCompressedFiles as $exportedCompressedFile) {
-            if (file_exists($exportedCompressedFile)) {
-                $log[] = $this->compressExportFile($exportedCompressedFile);
+            if ($exportDB['status'] == 200) {
+                $exportedCompressedFiles[] = $exportDB['file_name'];
+            } else {
+                $errors[] = $exportDB['message'];
             }
         }
 
+        // export files / folders
+        $exportFiles = $this->exportFiles();
+        $logs[] = $exportFiles;
 
-        $this->writeLogFile($log);
+        // append the exported files/folders into exported files
+        if ($exportFiles['status'] == 200) {
+            $exportedCompressedFiles = array_merge($exportedCompressedFiles, $exportFiles['file_names']);
+        } else {
+            $errors[] = $exportFiles['message'];
+        }
 
-        $uploadToGoogleDrive = $this->uploadToGoogleDrive($this->backupFilePath . $this->backupFileName);
-        $log[] = $uploadToGoogleDrive;
+        // append the complete backup file into exported files
+        foreach ($exportedCompressedFiles as $exportedCompressedFile) {
+            if (file_exists($exportedCompressedFile)) {
+                $logs[] = $this->compressExportFile($exportedCompressedFile);
+            }
+        }
+
+        $exportedCompressedFiles[] = $this->backupFilePath . $this->backupFileName;
+
+        // store compressed file to google drive if enabled
+        if ($this->config->cloud['google_drive']['allow']) {
+            $uploadToGoogleDrive = $this->uploadToGoogleDrive($this->backupFilePath . $this->backupFileName);
+            if ($uploadToGoogleDrive['status'] != 200) {
+                $errors[] = $uploadToGoogleDrive['message'] . " | " . $uploadToGoogleDrive['response'];
+            }
+            $logs[] = $uploadToGoogleDrive;
+        }
+
+        // store compressed file to AWS if enabled
+        if ($this->config->cloud['aws']['allow']) {
+            $uploadToAWS = $this->uploadToAWS();
+            if ($uploadToAWS['status'] != 200) {
+                $errors[] = $uploadToAWS['message'] . " | " . $uploadToAWS['response'];
+            }
+            $logs[] = $uploadToAWS;
+        }
 
 
-        die(print_r(""));
-        // $uploadToAWS = $this->uploadToAWS();
-        // $log[] = $uploadToAWS;
+        // clean up compressed files
+        if ($this->config->configFile['backup']['cleanup']) {
+            $cleanUp = $this->cleanUp($exportedCompressedFiles);
+            if ($cleanUp['status'] != 200) {
+                $errors[] = $cleanUp['message'] . ' | ' . $cleanUp['response'];
+            }
+            $log[] = $cleanUp;
+        }
 
-        // $sendLogMail = $this->sendLogMail();
-        // $log[] = $sendLogMail;
+        // send email alert 
+        $sendLogMail = $this->sendLogMail((count($errors) == 0 ? true : false), count($errors) == 0 ? $errors : false);
+        if ($sendLogMail['status'] != 200) {
+            $errors[] = $sendLogMail['message'] . ' | ' . $sendLogMail['response'];
+        }
+        $log[] = $sendLogMail;
 
-        $cleanUp = $this->cleanUp($exportedCompressedFiles); // clean up compressed files
-
-        $this->writeLogFile($log);
+        // write out the logging data
+        $this->writeLogFile($logs);
     }
 
     private function exportDB() {
@@ -76,15 +112,15 @@ class BackupSentry {
     }
 
     private function uploadToGoogleDrive() {
-        return (new GoogleDrive($this->config))->upload($this->compressedFile);
+        return (new GoogleDrive($this->config))->upload($this->backupFilePath . $this->backupFileName);
     }
 
     private function uploadToAWS() {
-        return (new AWS($this->config))->upload($this->compressedFile);
+        return (new AWS($this->config))->upload($this->backupFilePath . $this->backupFileName);
     }
 
-    private function sendLogMail($status, $to, $subject, $message) {
-        return (new Mail($this->config))->send($status, $to, $subject, $message);
+    private function sendLogMail($status, $content) {
+        return (new Mail($this->config))->send($status, $content);
     }
 
     private function writeLogFile($message) {
