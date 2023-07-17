@@ -6,7 +6,11 @@
   "keywords": [
     "backup",
     "database-backup",
-    "google-drive-backup"
+    "google-drive-backup",
+    "php-backup",
+    "laravel-backup-package",
+    "backup-one-line",
+    "aws-backup"
   ],
   "license": "MIT",
   "minimum-stability": "stable",
