@@ -20,9 +20,20 @@ class AWS {
         $this->bucketName = $this->config->cloud['aws']['bucket_name'];
         $this->region = $this->config->cloud['aws']['region'];
     }
-
+    /**
+     * The function `upload` uploads a file to an S3 bucket using the AWS SDK for PHP.
+     * 
+     * @param filePath The filePath parameter is the path to the file that you want to upload to the S3
+     * bucket. It should be a string representing the file's location on your local system.
+     * 
+     * @return array with the following keys:
+     * - "status": The HTTP status code of the response.
+     * - "success": A boolean indicating whether the file upload was successful or not.
+     * - "message": A message describing the result of the file upload.
+     * - "file_path": The stored file path in the S3 bucket, if the upload was successful.
+     * - "response": The exception object
+     */
     public function upload($filePath) {
-
         $s3 = new S3Client([
             'region'  => $this->region,
             'version' => 'latest',
@@ -31,7 +42,6 @@ class AWS {
                 'secret' => $this->secretKey,
             ]
         ]);
-
         try {
             $result = $s3->putObject([
                 'Bucket' => $this->bucketName,

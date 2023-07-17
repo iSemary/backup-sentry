@@ -31,6 +31,10 @@ class GoogleDrive {
     }
 
 
+    /**
+     * The function `getGoogleDriveAccessToken` retrieves an access token from Google Drive using the
+     * provided client ID, client secret, and refresh token.
+     */
     public function getGoogleDriveAccessToken() {
         $data = array(
             "client_id" => $this->googleDriveClientID,
@@ -62,7 +66,17 @@ class GoogleDrive {
             $this->accessToken = $response['access_token'];
         }
     }
-
+    /**
+     * The function `upload` uploads a file to Google Drive using the Google Drive API.
+     * 
+     * @param string filePath The `filePath` parameter is the path to the file that you want to upload to Google
+     * Drive.
+     * 
+     * @return array with the following keys: 'success', 'status', 'message', and 'response'. The
+     * 'success' key indicates whether the file was uploaded successfully or not. The 'status' key contains
+     * the HTTP status code of the response. The 'message' key provides a message indicating the result of
+     * the upload. The 'response' key contains the JSON-encoded response from the Google
+     */
     public function upload($filePath) {
 
         $this->fileMetaData = [

@@ -91,7 +91,7 @@ class Compress {
     /**
      * The function `deleteDir` recursively deletes a directory and all its contents.
      * 
-     * @param $dirPath The `dirPath` parameter is the path to the directory that you want to delete.
+     * @param string $dirPath The `dirPath` parameter is the path to the directory that you want to delete.
      */
     private function deleteDir($dirPath) {
         $it = new \RecursiveDirectoryIterator($dirPath, \RecursiveDirectoryIterator::SKIP_DOTS);

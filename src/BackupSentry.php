@@ -8,6 +8,8 @@ use iSemary\BackupSentry\DB\Export;
 use iSemary\BackupSentry\Logger\Log;
 use iSemary\BackupSentry\Mail\Mail;
 use iSemary\BackupSentry\Storage\StorageHandler;
+use iSemary\BackupSentry\Channels\Slack;
+use iSemary\BackupSentry\Channels\Telegram;
 
 class BackupSentry {
     protected $config;
@@ -22,6 +24,7 @@ class BackupSentry {
         $this->backupFilePath = $this->config->backupPath . 'complete/';
     }
 
+    // The main method responsible for executing the backup process.
     public function run() {
         $logs = [];
         $errors = [];
@@ -96,38 +99,80 @@ class BackupSentry {
             }
             $log[] = $sendLogMail;
         }
+
+        // send slack alert 
+        if ($this->config->channels->slack->allow) {
+            $sendLogSlack = $this->sendLogSlack(count($errors) == 0 ? $errors : false);
+            if ($sendLogSlack['status'] != 200) {
+                $errors[] = $sendLogSlack['message'] . ' | ' . $sendLogSlack['response'];
+            }
+            $log[] = $sendLogSlack;
+        }
+
+        // send telegram alert 
+        if ($this->config->channels->telegram->allow) {
+            $sendLogTelegram = $this->sendLogTelegram(count($errors) == 0 ? $errors : false);
+            $log[] = $sendLogTelegram;
+        }
+
         // write out the logging data
         $this->writeLogFile($logs);
     }
 
+    // Export the database using the configured settings.
     private function exportDB() {
         return (new Export($this->config))->run();
     }
 
+    // Export files/folders using the configured storage settings.
     private function exportFiles() {
         return (new StorageHandler($this->config))->run();
     }
 
+    // Compress the exported data into a zip file.
     private function compressExportFile($exportedCompressedFile) {
         return (new Compress($this->config))->zip($this->backupFilePath . $this->backupFileName, $exportedCompressedFile, $this->config->zipPassword);
     }
 
+    // Upload the backup file to Google Drive if enabled in the configuration.
     private function uploadToGoogleDrive() {
         return (new GoogleDrive($this->config))->upload($this->backupFilePath . $this->backupFileName);
     }
 
+    // Upload the backup file to AWS if enabled in the configuration.
     private function uploadToAWS() {
         return (new AWS($this->config))->upload($this->backupFilePath . $this->backupFileName);
     }
 
+    // Send email alert with backup log and error status if applicable.
     private function sendLogMail($status, $content) {
         return (new Mail($this->config))->send($status, $content);
     }
 
+    // Send Slack alert with backup log and status (success/failure).
+    private function sendLogSlack($content) {
+        return (new Slack($this->config))->send(($content ? json_encode($content) : "Successful backup " . date("d F Y")), "Backup Sentry | " . ($content ? "Failure Backup" : "Successful backup"), ($content ? ":rotating_light:" : ":white_check_mark:"));
+    }
+
+    // Send Telegram alert with backup log and error status if applicable.
+    private function sendLogTelegram($content) {
+        $log = [];
+        $chatIDs = $this->config->channels->telegram->chatIDs;
+        $content = $content ? json_encode($content) : "Successful backup " . date("d F Y");
+
+        foreach ($chatIDs as $chatID) {
+            $log[] = (new Telegram($this->config))->send($chatID, $content);
+        }
+
+        return $log;
+    }
+
+    // Write the logging data to the specified log file.
     private function writeLogFile($message) {
         return (new Log)->write($message, $this->config->logFile);
     }
 
+    // Clean up compressed backup files based on the provided array.
     private function cleanUp(array $files = []) {
         return (new StorageHandler($this->config))->cleanUp($files);
     }

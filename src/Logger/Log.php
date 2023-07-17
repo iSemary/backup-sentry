@@ -4,6 +4,16 @@ namespace iSemary\BackupSentry\Logger;
 
 class Log {
 
+    /**
+     * The function writes a message to a file, creating the file and its directory if they don't exist,
+     * and returns a success or failure message.
+     * 
+     * @param message The message parameter is the content that you want to write to the file. It can be
+     * any string or data that you want to log or save to the file.
+     * @param file The `file` parameter is the path to the file where the message will be logged.
+     * 
+     * @return an array with the following keys and values:
+     */
     public function write($message, $file) {
         try {
 
@@ -35,7 +45,15 @@ class Log {
             ];
         }
     }
-
+    /**
+     * The function "formatLogMessage" formats a log message by adding a timestamp and converting the
+     * original message to a JSON string.
+     * 
+     * @param originalMessage The original message is a variable that contains the message you want to
+     * format for logging purposes.
+     * 
+     * @return string $message formatted log message.
+     */
     private function formatLogMessage($originalMessage) {
         $dateTime = "[" . date("Y-m-d H:i:s") . "]";
         $message = "------------------------------------$dateTime-----------------------------------------------\n";

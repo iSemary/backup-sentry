@@ -13,11 +13,19 @@ class Export {
         $this->compress = (new Compress);
     }
 
+    /**
+     * The function exports a database based on user configuration and returns a status, success message,
+     * and file name.
+     * 
+     * @return array an array with the following keys:
+     * - "status": The Status of the method process
+     * - "success": A boolean indicating whether the file upload was successful or not.
+     * - "message": A message describing the result of the file upload.
+     * - "file_name": The exported file name
+     * - "response": The exception object
+     *      */
     public function run() {
-
-
         if ($this->config->db['allow']) {
-
             try {
                 $dir = $this->config->backupPath . 'db/';
                 // create backup directory if not exists

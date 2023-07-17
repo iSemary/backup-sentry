@@ -9,11 +9,20 @@ class Telegram {
     public function __construct($config) {
         $this->botToken = $config->channels->telegram->botToken;
     }
-
-    public function send($phone_number, $message) {
+    /**
+     * The function sends a message to a Telegram chat using the Telegram Bot API.
+     * 
+     * @param chatID The chatID parameter is the unique identifier for the chat or conversation you want to
+     * send the message to. It can be a user's ID, a group chat ID, or a channel ID.
+     * @param message The "message" parameter is the text message that you want to send to the specified
+     * chat ID. It can be any string or message that you want to send to the user or group on Telegram.
+     * 
+     * @return array with the following keys and values:
+     */
+    public function send($chatID, $message) {
         $url = "https://api.telegram.org/bot" . $this->botToken . "/sendMessage";
         $data = array(
-            'chat_id' => $phone_number,
+            'chat_id' => $chatID,
             'text' => $message,
         );
 

@@ -6,10 +6,22 @@ class Slack {
     private $webhookURL;
 
     public function __construct($config) {
-        $this->webhookURL = $config->channels->slack->slackWebhookURL;
+        $this->webhookURL = $config->channels->slack->WebhookURL;
     }
 
-
+    /**
+     * The function sends a message to a Slack channel using a webhook URL.
+     * 
+     * @param message The message parameter is the text message that you want to send to Slack. It can be
+     * any string value that you want to notify or alert others about.
+     * @param username The username parameter is used to specify the name that will be displayed as the
+     * sender of the message in Slack. By default, it is set to 'BackupSentry | Alert'.
+     * @param emoji The `emoji` parameter is used to specify the emoji icon that will be displayed next to
+     * the message in Slack. By default, it is set to `:robot_face:`, which represents a robot face emoji.
+     * However, you can change it to any other valid emoji code to customize the icon.
+     * 
+     * @return array with the following keys:
+     */
     public function send($message, $username = 'BackupSentry | Alert', $emoji = ':robot_face:') {
         $data = array(
             'username' => $username,

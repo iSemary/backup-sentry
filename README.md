@@ -10,10 +10,52 @@ BackupSentry is a PHP backup package designed to provide a secure and seamless s
 ### ✅ Full Project Backup Or Specific Folders
 ### ✅ Exclude Specific Folders / Files
 ### ✅ Detailed Configuration Easy to use
+<br/>
 
-<hr/>
 
-## 🔑 Environment Keys Required For :
+# Flow Overview
+![alt text](https://i.postimg.cc/zDPpHkPg/Backup-Sentry-Flow.jpg)
+
+<br/>
+
+# Installation
+
+```
+composer require isemary/backup-sentry
+```
+
+```
+php artisan backup-sentry:publish
+```
+<br/>
+
+# Configuration
+
+
+
+<br/>
+
+# Example ~ PHP Native
+```php
+<?php
+
+require 'vendor/autoload.php';
+
+use iSemary\BackupSentry\BackupSentry;
+
+(new BackupSentry)->run();
+
+?>
+```
+# Example ~ Laravel
+```php
+use iSemary\BackupSentry\BackupSentry;
+
+Route::get('/', function() {
+    (new BackupSentry)->run();
+});
+```
+## 🔑 Default Environment Keys Required For :
 
 ### File Compress 
 
@@ -56,8 +98,14 @@ MAIL_ENCRYPTION=###
 MAIL_FROM_ADDRESS=###
 MAIL_FROM_NAME=###
 ```
-
-
+### Slack Alert
+```
+SLACK_WEBHOOK_URL=###
+```
+### Telegram Alert
+```
+TELEGRAM_BOT_TOKEN=###
+```
 ## Contact
 
 For any inquiries or support, please email me at [abdelrahmansamirmostafa@gmail.com](mailto:abdelrahmansamirmostafa@gmail.com) or visit my website at [abdelrahman.online](https://www.abdelrahman.online).

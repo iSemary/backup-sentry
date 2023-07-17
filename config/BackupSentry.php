@@ -5,12 +5,12 @@ return [
         // to backup the database tables
         'database' => [
             'allow' => true,
-            'connection' => $_ENV['DB_CONNECTION'],
-            'host' => $_ENV['DB_HOST'],
-            'port' => $_ENV['DB_PORT'],
-            'name' => $_ENV['DB_DATABASE'],
-            'username' => $_ENV['DB_USERNAME'],
-            'password' => $_ENV['DB_PASSWORD'],
+            'connection' => '',
+            'host' => '',
+            'port' => '',
+            'name' => '',
+            'username' => '',
+            'password' => '',
         ],
         // upload backup file into cloud services 
         'cloud_services' => [
@@ -22,7 +22,7 @@ return [
                 'client_secret' => '', // leave empty if the default value is same as env key : GOOGLE_DRIVE_CLIENT_SECRET
             ],
             'aws' => [
-                'allow' => true,
+                'allow' => false,
                 'access_key' => '', // leave empty if the default value is same as env key : AWS_ACCESS_KEY_ID
                 'secret_key' => '', // leave empty if the default value is same as env key : AWS_SECRET_ACCESS_KEY
                 'bucket_name' => '', // leave empty if the default value is same as env key : AWS_BUCKET
@@ -32,11 +32,11 @@ return [
         // Main email that will get emails about backup whatever it is success or failure 
         // [you could add cc on each type of emails in the options below]
         'mail' => [
-            'allow' => true,
-            'to' => ['to@mail.com', 'another_to@mail.com']
+            'allow' => false,
+            'to' => ['to@example.com']
         ],
         // enable sending alert emails
-        'email_alert' => true,
+        'email_alert' => false,
         'channels' => [
             // enable sending alert via slack channels
             'slack' => [
@@ -45,7 +45,7 @@ return [
             ],
             // enable sending alert via telegram bots
             'telegram' => [
-                'allow' => true,
+                'allow' => false,
                 'bot_token' => '', // you can create a new bot on telegram OR leave empty if the default value is same as env key : TELEGRAM_BOT_TOKEN
                 'chat_ids' => [] // array of chat ids of your users ** [Telegram not sending messages by phone number]
             ]
