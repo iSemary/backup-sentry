@@ -10,10 +10,10 @@ class Config {
     public $projectPath;
     public $backupPath;
     public $excludes;
+    public $compressedPassword;
     public $filesBackup;
     public $storagePath;
 
-    public $zipPassword;
     public $db;
     public array $cloud;
     public object $channels;
@@ -26,7 +26,6 @@ class Config {
         // Set the root project directory
         $this->projectPath = dirname($reflection->getFileName(), 3);
 
-        $this->zipPassword = $this->env->get('BACKUP_SENTRY_ZIP_PASSWORD');
         /**
          * Load user config options 
          */
@@ -48,6 +47,7 @@ class Config {
             'backup-sentry'
         ];
 
+        $this->compressedPassword = self::returnEnvValueIfNotExistsInConfig($this->configFile['backup']['compressed_password'], 'BACKUP_SENTRY_ZIP_PASSWORD');
 
         $this->logFile = $this->backupPath . 'log/log-' . date('Y-m-d') . '.log';
 

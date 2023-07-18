@@ -131,7 +131,7 @@ class BackupSentry {
 
     // Compress the exported data into a zip file.
     private function compressExportFile($exportedCompressedFile) {
-        return (new Compress($this->config))->zip($this->backupFilePath . $this->backupFileName, $exportedCompressedFile, $this->config->zipPassword);
+        return (new Compress($this->config))->zip($this->backupFilePath . $this->backupFileName, $exportedCompressedFile, $this->config->compressedPassword);
     }
 
     // Upload the backup file to Google Drive if enabled in the configuration.

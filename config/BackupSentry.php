@@ -2,6 +2,8 @@
 
 return [
     'backup' => [
+        // The compressed file password, leave empty if the default value is same as env key : BACKUP_SENTRY_ZIP_PASSWORD
+        'compressed_password' => '',
         // to backup the database tables
         'database' => [
             'allow' => true,
@@ -72,7 +74,7 @@ return [
         // that's mean the original back up folders will be kept in "/storage/backup-sentry/files/" [Which will be kept uncompressed]
         'keep_original_backup_folders' => true,
         // cleanup
-        'cleanup' => true
+        'cleanup' => false
     ],
     'options' => [
         // put the emails to be alerted with the successful backup notification

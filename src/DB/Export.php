@@ -44,7 +44,7 @@ class Export {
 
                 $dateTime = date('Y-m-d-H-i-s');
                 // set the filename for the db file
-                $databaseFile = $dir . "backup$dateTime.sql";
+                $databaseFile = $dir . "backup-$dateTime.sql";
 
                 switch ($this->config->db['connection']) {
                     case 'mysql':
@@ -64,7 +64,7 @@ class Export {
                 shell_exec($command);
                 // compress the database file
                 $compressBackupFilesDirectory = $this->config->projectPath . "/storage/backup-sentry/compressed/db/db-$dateTime.zip";
-                $filename = $this->compress->zip($compressBackupFilesDirectory, $databaseFile, $this->config->env->get("BACKUP_SENTRY_ZIP_PASSWORD"), $this->config->configFile['backup']['keep_original_backup_folders'], $this->config->configFile['options']['encryption'])['file_name'];
+                $filename = $this->compress->zip($compressBackupFilesDirectory, $databaseFile, $this->config->compressedPassword, $this->config->configFile['backup']['keep_original_backup_folders'], $this->config->configFile['options']['encryption'])['file_name'];
 
                 return [
                     'status' => 200,

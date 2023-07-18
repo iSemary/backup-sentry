@@ -55,7 +55,7 @@ class StorageHandler {
             copy($fromDestinationPath, $backupFilesPath . '/' . basename($fromDestinationPath));
         }
 
-        return $this->compress->zip($compressBackupFilesDirectory, $backupFilesPath, $this->config->env->get("BACKUP_SENTRY_ZIP_PASSWORD"), $this->config->configFile['backup']['keep_original_backup_folders'], $this->config->configFile['options']['encryption']);
+        return $this->compress->zip($compressBackupFilesDirectory, $backupFilesPath, $this->config->compressedPassword, $this->config->configFile['backup']['keep_original_backup_folders'], $this->config->configFile['options']['encryption']);
     }
 
     // Copy files from directory to another one, with array of excludes
