@@ -2,7 +2,7 @@
   "name": "isemary/backup-sentry",
   "description": "BackupSentry is a PHP backup package designed to provide a secure and seamless solution for protecting and backup your critical data. With its advanced features and intuitive interface, Effortlessly create scheduled backups of databases, files, and directories.",
   "type": "library",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "keywords": [
     "backup",
     "database-backup",
@@ -45,7 +45,8 @@
     "vlucas/phpdotenv": "^5.5",
     "aws/aws-sdk-php": "^3.0",
     "illuminate/console": "^9.0|^10.0",
-    "illuminate/support": "^9.0|^10.0"
+    "illuminate/support": "^9.0|^10.0",
+    "guzzlehttp/promises": "^1.4.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^10.2"

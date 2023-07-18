@@ -97,7 +97,7 @@ class Config {
                 'refresh_token' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['google_drive']['refresh_token'], 'GOOGLE_DRIVE_REFRESH_TOKEN'),
             ],
             'aws' => [
-                'allow' => $configFile['backup']['cloud_services']['google_drive']['allow'],
+                'allow' => $configFile['backup']['cloud_services']['aws']['allow'],
                 'access_key' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['aws']['access_key'], 'AWS_ACCESS_KEY_ID'),
                 'secret_key' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['aws']['secret_key'], 'AWS_SECRET_ACCESS_KEY'),
                 'bucket_name' => self::returnEnvValueIfNotExistsInConfig($configFile['backup']['cloud_services']['aws']['bucket_name'], 'AWS_BUCKET'),
