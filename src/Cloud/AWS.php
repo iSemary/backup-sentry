@@ -3,7 +3,7 @@
 namespace iSemary\BackupSentry\Cloud;
 
 use Aws\S3\S3Client;
-use Aws\Exception\AwsException;
+use Aws\S3\Exception\S3Exception;
 
 class AWS {
     private $config;
@@ -34,14 +34,17 @@ class AWS {
      * - "response": The exception object
      */
     public function upload($filePath) {
-        $s3 = new S3Client([
-            'region'  => $this->region,
-            'version' => 'latest',
-            'credentials' => [
-                'key'    => $this->accessKey,
-                'secret' => $this->secretKey,
-            ]
-        ]);
+        $credentials = array(
+            'key'    => $this->accessKey,
+            'secret' => $this->secretKey,
+        );
+
+        // Create an S3Client object
+        $s3 = S3Client::factory(array(
+            'region'      => $this->region, // Replace with your desired AWS region
+            'credentials' => $credentials,
+        ));
+
         try {
             $result = $s3->putObject([
                 'Bucket' => $this->bucketName,
@@ -51,7 +54,7 @@ class AWS {
             ]);
             $storedFilePath = $result['@metadata']['effectiveUri'];
             return ["status" => 200, "success" => true, "message" => "File uploaded successfully to S3 bucket.", "file_path" => $storedFilePath];
-        } catch (AwsException $e) {
+        } catch (S3Exception $e) {
             return ["status" => 400, "success" => false, "message" => "Error uploading file to S3 bucket.", "response" => $e];
         }
     }
