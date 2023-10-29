@@ -24,7 +24,7 @@ class Export {
      * - "file_name": The exported file name
      * - "response": The exception object
      *      */
-    public function run() {
+    public function run():array {
         if ($this->config->db['allow']) {
             try {
                 $dir = $this->config->backupPath . 'db/';

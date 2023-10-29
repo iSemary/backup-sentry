@@ -20,9 +20,9 @@ class Slack {
      * the message in Slack. By default, it is set to `:robot_face:`, which represents a robot face emoji.
      * However, you can change it to any other valid emoji code to customize the icon.
      * 
-     * @return array with the following keys:
+     * @return array with the following keys: status, success, message, response
      */
-    public function send($message, $username = 'BackupSentry | Alert', $emoji = ':robot_face:') {
+    public function send($message, $username = 'BackupSentry | Alert', $emoji = ':robot_face:') :array {
         $data = array(
             'username' => $username,
             'text' => $message,
@@ -49,6 +49,7 @@ class Slack {
                 'status' => 200,
                 'success' => true,
                 'message' => "Slack alert sent successfully.",
+                'response' => []
             ];
         } else {
             return [

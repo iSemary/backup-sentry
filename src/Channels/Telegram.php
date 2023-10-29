@@ -17,9 +17,9 @@ class Telegram {
      * @param message The "message" parameter is the text message that you want to send to the specified
      * chat ID. It can be any string or message that you want to send to the user or group on Telegram.
      * 
-     * @return array with the following keys and values:
+     * @return array with the following keys: status, success, message, response
      */
-    public function send($chatID, $message) {
+    public function send($chatID, $message):array {
         $url = "https://api.telegram.org/bot" . $this->botToken . "/sendMessage";
         $data = array(
             'chat_id' => $chatID,
@@ -46,6 +46,7 @@ class Telegram {
                 'status' => 200,
                 'success' => true,
                 'message' => "Telegram alert sent successfully.",
+                'response' => []
             ];
         } else {
             return [

@@ -33,7 +33,7 @@ class AWS {
      * - "file_path": The stored file path in the S3 bucket, if the upload was successful.
      * - "response": The exception object
      */
-    public function upload($filePath) {
+    public function upload($filePath):array {
         $credentials = array(
             'key'    => $this->accessKey,
             'secret' => $this->secretKey,

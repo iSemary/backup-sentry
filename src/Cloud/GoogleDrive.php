@@ -77,7 +77,7 @@ class GoogleDrive {
      * the HTTP status code of the response. The 'message' key provides a message indicating the result of
      * the upload. The 'response' key contains the JSON-encoded response from the Google
      */
-    public function upload($filePath) {
+    public function upload($filePath):array {
 
         $this->fileMetaData = [
             'name' => basename($filePath),

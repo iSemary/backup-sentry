@@ -12,9 +12,9 @@ class Log {
      * any string or data that you want to log or save to the file.
      * @param file The `file` parameter is the path to the file where the message will be logged.
      * 
-     * @return an array with the following keys and values:
+     * @return array with the following keys and values:
      */
-    public function write($message, $file) {
+    public function write($message, $file):array {
         try {
 
             if (!is_dir(dirname($file))) {
@@ -54,7 +54,7 @@ class Log {
      * 
      * @return string $message formatted log message.
      */
-    private function formatLogMessage($originalMessage) {
+    private function formatLogMessage($originalMessage):string {
         $dateTime = "[" . date("Y-m-d H:i:s") . "]";
         $message = "------------------------------------$dateTime-----------------------------------------------\n";
         $message .= json_encode($originalMessage);

@@ -32,7 +32,7 @@ class Mail {
         $this->mailer->setFrom($this->config->env->get("MAIL_FROM_ADDRESS"), $this->config->env->get("MAIL_FROM_NAME"));
     }
 
-    public function send($status, $content) {
+    public function send($status, $content):array {
         // collect all receivers emails
         $toAddresses = $this->config->configFile['backup']['mail']['to'];
         foreach ($toAddresses as $toAddress) {
@@ -71,14 +71,14 @@ class Mail {
         return ($status ? self::returnSuccessMail($content) : self::returnFailureMail($content));
     }
 
-    private function returnSuccessMail($content) {
+    private function returnSuccessMail($content):string {
         $output = '';
         $output .= "<h3 class='text-center'>Successful Backup</h3>";
         $output .= "<p class='text-center'>Your {$this->dateTimeFormatted} Backup is successfully created!</p>";
-        // AWS link or google drive link and complete zip file name
         return $output;
     }
-    private function returnFailureMail($content) {
+    
+    private function returnFailureMail($content):string {
         $content = json_encode($content);
         $output = '';
         $output .= "<h3 class='text-center'>Failure Backup</h3>";
