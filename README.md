@@ -26,7 +26,7 @@
 
 ### Install the package
 ```
-composer require isemary/backup-sentry
+composer require isemary/backup-sentry:v1.0.11
 ```
 ### Publish the configuration file
 ### For Laravel > 5.4
